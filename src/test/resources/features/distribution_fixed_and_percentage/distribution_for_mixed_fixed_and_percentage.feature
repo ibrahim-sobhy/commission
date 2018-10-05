@@ -1,12 +1,12 @@
 # new feature
 # Tags: optional
-    
+
 Feature: Distribution of commission among different accounts with fixed and percentage amounts
-In order to have a complex distribtuon of commission
-As a Revenu Manager
-I want to distribute the commission based percentage or even fixed amount for different accounts
-    
-Scenario: Distribute a commission between accounts where the total distribution is within the commssion amount
+  In order to have a complex distribtuon of commission
+  As a Revenu Manager
+  I want to distribute the commission based percentage or even fixed amount for different accounts
+
+  Scenario: Distribute a commission between accounts where the total distribution is within the commssion amount
     Given the account 123456 has 2 parents with percentage amounts
     And the first parent will have 10%
     And second parent will have 5%
@@ -18,8 +18,7 @@ Scenario: Distribute a commission between accounts where the total distribution 
     And the account 123456 will have the remaining 120
 
 
-
-Scenario: Distribute a commission between accounts where the total distribution is greater than the commssion amount
+  Scenario: Distribute a commission between accounts where the total distribution is greater than the commssion amount
     Given the account 123456 has 2 parents with percentage amounts
     And the first parent will have 20%
     And second parent will have 20%
@@ -32,7 +31,7 @@ Scenario: Distribute a commission between accounts where the total distribution 
     And the public beneficiary will have 50
     And the account 123456 will have the remaining 120
 
-Scenario: Distribute a commission between accounts where the total fixed distribution is greater than the commssion amount
+  Scenario: Distribute a commission between accounts where the total fixed distribution is greater than the commssion amount
     Given the account 123456 has 2 parents with percentage amounts
     And the first parent will have 20%
     And second parent will have 20%
