@@ -2,6 +2,7 @@ package com.gatewayless.core.commission.features.distribution_fixed_and_percenta
 
 
 import com.gatewayless.core.commission.api.CommissionApi;
+import com.gatewayless.core.commission.model.CommissionDistribution;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
@@ -9,9 +10,10 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import net.thucydides.core.annotations.Pending;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 
 public class WhenDistributeFixedAmount {
@@ -21,9 +23,11 @@ public class WhenDistributeFixedAmount {
 
 
   private CommissionApi commissionAPI;
+  private List<CommissionDistribution> commissionDistributions;
 
   @Before
   public void setup() {
+    //TODO: should be replaced with real HTTP call to commission API
     commissionAPI = mock(CommissionApi.class);
   }
 
@@ -36,19 +40,24 @@ public class WhenDistributeFixedAmount {
 
   @When("^ask to distribute the ([0-9]*\\.?[0-9]+)$")
   public void askToDistributeTheCommission(Double commission) {
-    commissionAPI.distribute(currentAccount, commission);
+    commissionDistributions = commissionAPI.distribute(currentAccount, commission);
   }
 
   @Then("^transfer ([0-9]*\\.?[0-9]+) to the account$")
   public void transferAccount_commissionToTheAccount(Double accountCommission) {
-    when(commissionAPI.commission(null)).thenReturn(accountCommission);
-    assertThat(commissionAPI.commission(null))
-        .isEqualTo(accountCommission);
+    commissionDistributions.stream()
+        .filter(step -> step.account().equals(currentAccount))
+        .findFirst()
+        .ifPresent(step -> assertThat(step.commission())
+            .isEqualTo(accountCommission));
   }
 
   @And("^([0-9]*\\.?[0-9]+) for the (\\d+)$")
   public void fixed_commissionForTheSpecified_account(Double fixedCommission, Long specifiedAccount) {
-//        assertThat(commissionSteps.getCommissionFor(specifiedAccount))
-//                .isEqualTo(fixedCommission);
+    commissionDistributions.stream()
+        .filter(step -> step.account().equals(specifiedAccount))
+        .findFirst()
+        .ifPresent(step -> assertThat(step.commission())
+            .isEqualTo(fixedCommission));
   }
 }

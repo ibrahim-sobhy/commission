@@ -4,9 +4,9 @@ import com.gatewayless.core.commission.model.CommissionDistribution;
 import com.gatewayless.core.commission.service.CommissionProfile;
 import com.gatewayless.core.commission.service.CommissionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Nullable;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -14,7 +14,13 @@ import java.util.List;
 
 import static org.springframework.util.ObjectUtils.isEmpty;
 
+/**
+ * Define the API for commission service.
+ *
+ * @author Ibrahim Sobhy
+ */
 @RestController
+@RequestMapping("/api/commission")
 public class CommissionApi {
 
   @Autowired
@@ -30,8 +36,9 @@ public class CommissionApi {
    * @param commission    the required commission.
    * @return the outcome of distributions between the accounts based on the commission profile.
    */
-  public List<CommissionDistribution> distribute(@NotNull Long sourceAccount,
-                                                 @NotNull Double commission) {
+  @GetMapping("/{sourceAccount:}/{commission:}")
+  public List<CommissionDistribution> distribute(@Valid @NotNull @PathVariable Long sourceAccount,
+                                                 @PathVariable @Valid @NotNull Double commission) {
     if (isEmpty(sourceAccount) || !isPositive(sourceAccount)) {
       throw new IllegalArgumentException("account should not be empty");
     }
@@ -45,11 +52,6 @@ public class CommissionApi {
     );
   }
 
-  public Double commission(@Nullable Long account) {
-    //TODO: implement
-    throw new UnsupportedOperationException("No implemented yet.");
-  }
-
   /**
    * Fetch the commission history of specific account.
    *
@@ -58,9 +60,10 @@ public class CommissionApi {
    * @param to            fetch history to
    * @return the history within the specified dates
    */
-  public List<CommissionDistribution> history(Long sourceAccount,
-                                              LocalDateTime from,
-                                              LocalDateTime to) {
+  @GetMapping("history/{sourceAccount:}")
+  public List<CommissionDistribution> history(@Valid @NotNull @PathVariable Long sourceAccount,
+                                              @RequestParam(value = "from") LocalDateTime from,
+                                              @RequestParam(value = "to") LocalDateTime to) {
     if (isEmpty(from) || isEmpty(to)) {
       return commissionService.lookupHistory(sourceAccount);
     }

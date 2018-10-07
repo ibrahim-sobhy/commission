@@ -8,8 +8,11 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.gatewayless.core.commission.model.CommissionStep.StepType.FIXED;
-
+/**
+ * Represent first layer of availiable services for commission.
+ *
+ * @author Ibrahim Sobhy
+ */
 @Service
 public class CommissionService {
 
@@ -25,25 +28,30 @@ public class CommissionService {
    */
   public List<CommissionDistribution> distribute(CommissionProfileDefinition profileDefinition,
                                                  Double commission) {
-    if (isCommissionSmallerThanDistribution(profileDefinition, commission)) {
+    if (commissionDistributor.isCommissionSmallerThanDistribution(profileDefinition, commission)) {
       return commissionDistributor.distributeFullyToSourceAccount(profileDefinition, commission);
     }
     return commissionDistributor.distribute(profileDefinition, commission);
   }
 
-
-  private boolean isCommissionSmallerThanDistribution(CommissionProfileDefinition profileDefinition,
-                                                      Double commission) {
-    return profileDefinition.steps().stream()
-        .filter(step -> !step.isRootAccont())
-        .filter(step -> step.type() == FIXED)
-        .anyMatch(step -> step.amount() >= commission);
-  }
-
+  /**
+   * Lookup history for account for last day transactions.
+   *
+   * @param sourceAccount which want to get history.
+   * @return the commission history for the last day transactions.
+   */
   public List<CommissionDistribution> lookupHistory(Long sourceAccount) {
     throw new UnsupportedOperationException("Not Implemented yet.");
   }
 
+  /**
+   * Lookup history for account transactions with dates.
+   *
+   * @param sourceAccount which want to get history.
+   * @param from          since which date.
+   * @param to            till which date.
+   * @return he commission history transactions within the specified date range.
+   */
   public List<CommissionDistribution> lookupHistory(Long sourceAccount, LocalDateTime from,
                                                     LocalDateTime to) {
     throw new UnsupportedOperationException("Not Implemented yet.");
