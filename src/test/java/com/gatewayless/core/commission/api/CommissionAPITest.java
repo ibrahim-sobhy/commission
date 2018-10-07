@@ -87,7 +87,7 @@ public class CommissionAPITest {
         .build()
     );
     CommissionProfileDefinition profile = CommissionProfileDefinition.builder()
-        .step(new CommissionStep(FIXED, 100.0))
+        .step(new CommissionStep(FIXED, 100.0, 111L))
         .build();
     when(commissionProfile
         .findByAccount(sourceAccount))
@@ -118,7 +118,7 @@ public class CommissionAPITest {
             .build()
     );
     CommissionProfileDefinition profile = CommissionProfileDefinition.builder()
-        .step(new CommissionStep(PERCENTAGE, parentPercentage))
+        .step(new CommissionStep(PERCENTAGE, parentPercentage, parentAccount))
         .build();
     when(commissionProfile
         .findByAccount(sourceAccount))

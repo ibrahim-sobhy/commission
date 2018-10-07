@@ -3,15 +3,14 @@ package com.gatewayless.core.commission.api;
 import com.gatewayless.core.commission.model.CommissionDistribution;
 import com.gatewayless.core.commission.service.CommissionProfile;
 import com.gatewayless.core.commission.service.CommissionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
 
 import static org.springframework.util.ObjectUtils.isEmpty;
 
@@ -53,14 +52,18 @@ public class CommissionApi {
 
   /**
    * Fetch the commission history of specific account.
+   *
    * @param sourceAccount where to find the history.
-   * @param from fetch history from
-   * @param to fetch history to
+   * @param from          fetch history from
+   * @param to            fetch history to
    * @return the history within the specified dates
    */
   public List<CommissionDistribution> history(Long sourceAccount,
                                               LocalDateTime from,
                                               LocalDateTime to) {
+    if (isEmpty(from) || isEmpty(to)) {
+      return commissionService.lookupHistory(sourceAccount);
+    }
     if (from.isBefore(to)) {
       return Collections.emptyList();
     }

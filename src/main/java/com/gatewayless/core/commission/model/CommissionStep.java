@@ -1,8 +1,6 @@
 package com.gatewayless.core.commission.model;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 @RequiredArgsConstructor
@@ -13,6 +11,10 @@ public class CommissionStep {
   StepType type;
   private final @NonNull
   Double amount;
+  private final Long account;
+  @Setter
+  @Builder.Default
+  private boolean isRootAccont = false;
 
   public enum StepType {
     FIXED, PERCENTAGE
